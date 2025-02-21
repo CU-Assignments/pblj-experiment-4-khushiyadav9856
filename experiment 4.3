@@ -1,0 +1,49 @@
+import java.util.concurrent.*; 
+class TicketBookingSystem { 
+private int availableSeats; 
+public TicketBookingSystem(int seats) { 
+this.availableSeats = seats; 
+} 
+public synchronized boolean bookSeat(String customer) { 
+if (availableSeats > 0) { 
+System.out.println(customer + " booked a seat. Remaining: " + (--availableSeats)); 
+return true; 
+} else { 
+System.out.println(customer + " No seats left!"); 
+return false; 
+}}}} 
+class CustomerThread extends Thread { 
+private TicketBookingSystem system; 
+private String customerName; 
+public CustomerThread(TicketBookingSystem system, String customerName, int priority) { 
+this.system = system; 
+this.customerName = customerName; 
+this.setPriority(priority); // Set thread priority 
+} 
+
+@Override 
+public void run() { 
+system.bookSeat(customerName); 
+}} 
+public class TicketBooking { 
+public static void main(String[] args) { 
+TicketBookingSystem system = new TicketBookingSystem(5);  
+CustomerThread vip1 = new CustomerThread(system, "VIP_John", 
+Thread.MAX_PRIORITY); 
+CustomerThread vip2 = new CustomerThread(system, "VIP_Alice", 
+Thread.MAX_PRIORITY); 
+CustomerThread normal1 = new CustomerThread(system, "User_Bob", 
+Thread.NORM_PRIORITY); 
+CustomerThread normal2 = new CustomerThread(system, "User_Emma", 
+Thread.NORM_PRIORITY); 
+CustomerThread normal3 = new CustomerThread(system, "User_Mike", 
+Thread.NORM_PRIORITY); 
+CustomerThread normal4 = new CustomerThread(system, "User_Sam", 
+Thread.NORM_PRIORITY); 
+vip1.start(); 
+vip2.start(); 
+normal1.start(); 
+normal2.start(); 
+normal3.start(); 
+normal4.start(); 
+} 
